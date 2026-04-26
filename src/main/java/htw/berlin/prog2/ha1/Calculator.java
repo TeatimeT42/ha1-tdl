@@ -14,6 +14,11 @@ public class Calculator {
 
     private String latestOperation = "";
 
+    // Flag, ob die zuletzt gedrueckte Taste die Clear-Taste war.
+// Wird benoetigt, damit beim ersten C-Druck nur der Bildschirm, beim zweiten
+// C-Druck zusaetzlich die zwischengespeicherten Werte geloescht werden.
+    private boolean lastKeyWasClear = false;
+
     /**
      * @return den aktuellen Bildschirminhalt als String
      */
@@ -45,9 +50,12 @@ public class Calculator {
      * im Ursprungszustand ist.
      */
     public void pressClearKey() {
+        if(lastKeyWasClear) {
+            latestOperation = "";
+            latestValue = 0.0;
+        }
         screen = "0";
-        latestOperation = "";
-        latestValue = 0.0;
+        lastKeyWasClear = true;
     }
 
     /**
