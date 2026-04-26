@@ -112,5 +112,23 @@ void testRegularInput() {
         Calculator calc = new Calculator();
         calc.pressNegativeKey();
     }
+
+    @Test
+    @DisplayName("should keep stored operation after single press of C key")
+    void testClearKeyFirstPressKeepsOperation() {
+        Calculator calc = new Calculator();
+
+        calc.pressDigitKey(8);
+        calc.pressBinaryOperationKey("+");
+        calc.pressDigitKey(5);
+        calc.pressClearKey();
+        calc.pressDigitKey(2);
+        calc.pressEqualsKey();
+
+        String expected = "10";
+        String actual = calc.readScreen();
+
+        assertEquals(expected, actual);
+    }
 }
 
