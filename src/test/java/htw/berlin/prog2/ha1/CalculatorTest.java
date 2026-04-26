@@ -130,5 +130,22 @@ void testRegularInput() {
 
         assertEquals(expected, actual);
     }
+    @Test
+    @DisplayName("should repeat last operation with last operand when pressing equals multiple x")
+    void testEqualsKeyRepeatedPress() {
+        Calculator calc = new Calculator();
+
+        calc.pressDigitKey(2);
+        calc.pressBinaryOperationKey("+");
+        calc.pressDigitKey(3);
+        calc.pressEqualsKey();   // 2 + 3 = 5
+        calc.pressEqualsKey();   // 5 + 3 = 8
+        calc.pressEqualsKey();   // 8 + 3 = 11
+
+        String expected = "11";
+        String actual = calc.readScreen();
+
+        assertEquals(expected, actual);
+    }
 }
 
