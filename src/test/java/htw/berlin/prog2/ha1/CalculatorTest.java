@@ -112,7 +112,7 @@ void testRegularInput() {
         Calculator calc = new Calculator();
         calc.pressNegativeKey();
     }
-
+ 
     @Test
     @DisplayName("should keep stored operation after single press of C key")
     void testClearKeyFirstPressKeepsOperation() {
