@@ -14,10 +14,11 @@ public class Calculator {
 
     private String latestOperation = "";
 
-    // Flag, ob die zuletzt gedrueckte Taste die Clear-Taste war.
-// Wird benoetigt, damit beim ersten C-Druck nur der Bildschirm, beim zweiten
-// C-Druck zusaetzlich die zwischengespeicherten Werte geloescht werden.
     private boolean lastKeyWasClear = false;
+
+    private double secondOperand;
+
+    private boolean lastKeyWasEquals = false;
 
     /**
      * @return den aktuellen Bildschirminhalt als String
@@ -35,6 +36,10 @@ public class Calculator {
      */
     public void pressDigitKey(int digit) {
         if(digit > 9 || digit < 0) throw new IllegalArgumentException();
+
+        lastKeyWasClear = false;
+        lastKeyWasEquals = false;
+
 
         if(screen.equals("0") || latestValue == Double.parseDouble(screen)) screen = "";
 
@@ -56,6 +61,7 @@ public class Calculator {
         }
         screen = "0";
         lastKeyWasClear = true;
+        lastKeyWasEquals = false;
     }
 
     /**
@@ -68,6 +74,8 @@ public class Calculator {
      * @param operation "+" für Addition, "-" für Substraktion, "x" für Multiplikation, "/" für Division
      */
     public void pressBinaryOperationKey(String operation)  {
+        lastKeyWasClear = false;
+        lastKeyWasEquals = false;
         latestValue = Double.parseDouble(screen);
         latestOperation = operation;
     }
@@ -80,6 +88,8 @@ public class Calculator {
      * @param operation "√" für Quadratwurzel, "%" für Prozent, "1/x" für Inversion
      */
     public void pressUnaryOperationKey(String operation) {
+        lastKeyWasClear = false;
+        lastKeyWasEquals = false;
         latestValue = Double.parseDouble(screen);
         latestOperation = operation;
         var result = switch(operation) {
@@ -102,6 +112,8 @@ public class Calculator {
      * Beim zweimaligem Drücken, oder wenn bereits ein Trennzeichen angezeigt wird, passiert nichts.
      */
     public void pressDotKey() {
+        lastKeyWasClear = false;
+        lastKeyWasEquals = false;
         if(!screen.contains(".")) screen = screen + ".";
     }
 
@@ -113,6 +125,8 @@ public class Calculator {
      * entfernt und der Inhalt fortan als positiv interpretiert.
      */
     public void pressNegativeKey() {
+        lastKeyWasClear = false;
+        lastKeyWasEquals = false;
         screen = screen.startsWith("-") ? screen.substring(1) : "-" + screen;
     }
 
@@ -126,16 +140,24 @@ public class Calculator {
      * und das Ergebnis direkt angezeigt.
      */
     public void pressEqualsKey() {
+        if(!lastKeyWasEquals) {
+            secondOperand = Double.parseDouble(screen);
+        } else {
+            latestValue = Double.parseDouble(screen);
+        }
+
         var result = switch(latestOperation) {
-            case "+" -> latestValue + Double.parseDouble(screen);
-            case "-" -> latestValue - Double.parseDouble(screen);
-            case "x" -> latestValue * Double.parseDouble(screen);
-            case "/" -> latestValue / Double.parseDouble(screen);
+            case "+" -> latestValue + secondOperand;
+            case "-" -> latestValue - secondOperand;
+            case "x" -> latestValue * secondOperand;
+            case "/" -> latestValue / secondOperand;
             default -> throw new IllegalArgumentException();
         };
         screen = Double.toString(result);
-        if(screen.equals("Infinity")) screen = "Error";
-        if(screen.endsWith(".0")) screen = screen.substring(0,screen.length()-2);
+        if(screen.equals("Infinity") || screen.equals("NaN")) screen = "Error";
+        if(screen.endsWith(".0")) screen = screen.substring(0, screen.length()-2);
         if(screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10);
+
+        lastKeyWasEquals = true;
     }
 }

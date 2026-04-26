@@ -10,18 +10,15 @@ class CalculatorTest {
 @Test
 @DisplayName("test regular input 12345")
 void testRegularInput() {
-    //Testfall einrichten
     Calculator calc = new Calculator();
     calc.pressDigitKey(1);
     calc.pressDigitKey(2);
     calc.pressDigitKey(3);
     calc.pressDigitKey(4);
     calc.pressDigitKey(5);
-    //erwartetes Ergebnis beschreiben
     String expected = "12345";
     String actual = calc.readScreen();
 
-    //vergleicht ob Test erfolgreich ist
     assertEquals(expected, actual);
     }
     @Test
@@ -107,10 +104,16 @@ void testRegularInput() {
 
     //TODO hier weitere Tests erstellen
     @Test
-    @DisplayName("should allow subtraction")
-    void testNegativeSubtraction() {
+    @DisplayName("should toggle sign of a positive number when pressing +/-")
+    void testNegativeKeyTogglesSign() {
         Calculator calc = new Calculator();
+        calc.pressDigitKey(7);
         calc.pressNegativeKey();
+
+        String expected = "-7";
+        String actual = calc.readScreen();
+
+        assertEquals(expected, actual);
     }
 
     @Test
